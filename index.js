@@ -23,6 +23,7 @@ app.get('/teams/', (request, response) => {
 
 
 app.get('/teams/:id', (request, response) => {
+
     let matchingTeam = teams.filter((team) => {
         return team.id === parseInt(request.params.id)
     })
@@ -30,9 +31,31 @@ app.get('/teams/:id', (request, response) => {
         return team.abbreviation === (request.params.id.toUpperCase())
     })
     if (!isNaN(request.params.id)) {
-        response.send(matchingTeam)
+
+
+        if (matchingTeam.length) {
+
+            response.send(matchingTeam)
+
+        } else {
+
+            response.status(404).send('Sorry, that id doesnt exist')
+
+        }
+
+
     } else {
-        response.send(matchingAbb)
+
+        if (matchingAbb.length) {
+
+            response.send(matchingAbb)
+
+        } else {
+
+            response.status(404).send('Sorry, that Abbreviation doesnt exist')
+
+        }
+
     }
 })
 
