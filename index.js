@@ -1,5 +1,6 @@
 const express = require('express')
 const teams = require('./teams.json')
+const bodyParser = require('body-parser')
 
 const app = express()
 
@@ -11,53 +12,57 @@ app.get('/teams', (request, response) => {
 
 })
 
-app.get('/teams/', (request, response) => {
+
+//why do i not need this, is it cause above
+/* app.get('/teams/', (request, response) => {
 
     const allTeams = teams.map((team) => {
 
         return team
 
     })
-})
+}) */
 
 
 
 app.get('/teams/:id', (request, response) => {
 
-    let matchingTeam = teams.filter((team) => {
-        return team.id === parseInt(request.params.id)
+
+    const matchingTeams = teams.filter((team) => {
+        return team.id === parseInt(request.params.id) || team.abbreviation.toUpperCase() === request.params.id.toUpperCase()
     })
-    let matchingAbb = teams.filter((team) => {
-        return team.abbreviation === (request.params.id.toUpperCase())
-    })
-    if (!isNaN(request.params.id)) {
 
+    // like and if else
+    return matchingTeams.length
+        ? response.send(matchingTeams)
+        : response.sendStatus(404)
 
-        if (matchingTeam.length) {
-
-            response.send(matchingTeam)
-
-        } else {
-
-            response.status(404).send('Sorry, that id doesnt exist')
-
-        }
-
-
-    } else {
-
-        if (matchingAbb.length) {
-
-            response.send(matchingAbb)
-
-        } else {
-
-            response.status(404).send('Sorry, that Abbreviation doesnt exist')
-
-        }
-
-    }
 })
+
+
+app.use(bodyParser.json())
+
+app.post('/teams', (request, response) => {
+
+    //destruct
+    const { id, location, mascot, abbreviation, conference, division } = request.body
+
+    //check for values
+    if (!id || !location || !mascot || !abbreviation || !conference || !division) {
+        response.status(400).send('didnt provide one of the following : id, location, mascot, abbreviation, conference, division')
+    }
+
+    const newTeam = { id, location, mascot, abbreviation, conference, division }
+
+    teams.push(newTeam)
+
+    // sends a created status
+    response.status(201).send(newTeam)
+})
+
+
+
+
 
 
 
