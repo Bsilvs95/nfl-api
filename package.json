@@ -4,8 +4,9 @@
   "description": "In the initial commit to this project, you have been provided data about NFL teams. In a branch called `get-team-answer`, you are tasked with creating an Express server capable of responding to the following routes.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "./node_modules/.bin/nodemon index.js",
+    "dev": "npm run migrate:dev && npm run server:dev",
+    "migrate:dev": "./node_modules/.bin/sequelize db:migrate --env development --config ./config/sequelize.js",
+    "server:dev": "./node_modules/.bin/nodemon index.js",
     "start": "./node_modules/.bin/nodemon index.js"
   },
   "repository": {
@@ -19,7 +20,11 @@
   },
   "homepage": "https://github.com/Bsilvs95/nfl-api#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mysql2": "^2.0.1",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"
